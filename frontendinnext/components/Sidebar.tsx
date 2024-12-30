@@ -9,6 +9,9 @@ const Sidebar = () => {
       <Link href="/browse" className="block py-2 px-6  hover:bg-gray-200">
         📕Courses
       </Link>
+      <Link href="/admin/login" className="block py-2 px-6  hover:bg-gray-200">
+        Admin Login
+      </Link>
     </div>
   );
 };

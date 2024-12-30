@@ -1,4 +1,3 @@
-import { title } from "process";
 import { useState } from "react";
 import axios from "axios";
 interface UploadVideoProps {
@@ -8,7 +7,7 @@ interface UploadVideoProps {
 }
 function UploadVideo({
   folderId,
-  isUploadVideoModelOpen,
+  // isUploadVideoModelOpen,
   setIsUploadVideoModelOpen,
 }: UploadVideoProps) {
   const [videoUrl, setVideoUrl] = useState<null | string>(null); //forsending to db

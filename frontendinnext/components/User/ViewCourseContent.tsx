@@ -24,9 +24,16 @@ function ViewCourseContent({ id }: { id: string }) {
     videos: Video[];
     link: Link[];
   }
-  const [courseLoadingMessage, setcourseLoadingMessage] = useState<
-    string | null
-  >(null);
+  interface response {
+    data: {
+      token: string;
+      rootDirectory: courseRootDirectory;
+    };
+    status: number;
+  }
+  // const [courseLoadingMessage, setcourseLoadingMessage] = useState<
+  //   string | null
+  // >(null);
   // const [course, setCourse] = useState<Course[]>([]);
   const [courseRootDirectory, setCourseRootDirectory] =
     useState<courseRootDirectory | null>(null);
@@ -35,11 +42,11 @@ function ViewCourseContent({ id }: { id: string }) {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          setcourseLoadingMessage("Authorization token is missing.");
+          // setcourseLoadingMessage("Authorization token is missing.");
           return;
         }
 
-        const response: any = await axios.get(
+        const response: response = await axios.get(
           `http://localhost:3000/api/v1/user/accesscourse/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -51,11 +58,11 @@ function ViewCourseContent({ id }: { id: string }) {
           // setCourse(response.data.course); //
           setCourseRootDirectory(response.data.rootDirectory);
         } else {
-          setcourseLoadingMessage("Failed to load course");
+          // setcourseLoadingMessage("Failed to load course");
         }
       } catch (error) {
         console.error(error);
-        setcourseLoadingMessage("Something went wrong.");
+        // setcourseLoadingMessage("Something went wrong.");
       }
     };
 
@@ -90,7 +97,7 @@ function ViewCourseContent({ id }: { id: string }) {
           </div>
 
           {/* mapping video for each week(el is outer folder here) */}
-          {el.videos.map((el, index) => (
+          {el.videos.map((el) => (
             <div
               key={el.id}
               style={{

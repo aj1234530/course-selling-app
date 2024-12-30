@@ -195,16 +195,33 @@ adminRouter.delete("/folderdelete/:folderId", async (req, res) => {
     const deleteFolder = await prisma.folder.delete({
       where: { id: folderId },
     });
-    res
-      .status(200)
-      .json({
-        message: "the requested folder and video related to this  was deleted",
-      });
+    res.status(200).json({
+      message: "the requested folder and video related to this  was deleted",
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+adminRouter.delete(
+  "/course/delete/:courseId",
+  authSessionMiddleware,
+  async (req: Request, res: Response) => {
+    const { courseId } = req.params;
+    try {
+      const course = await prisma.course.delete({
+        where: { id: courseId },
+        include: { rootCourseContentDirectory: true },
+      });
+      res.status(200).json({ message: "Requested course Deleted" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+);
+
 //access a course
 
 //add resources to the course

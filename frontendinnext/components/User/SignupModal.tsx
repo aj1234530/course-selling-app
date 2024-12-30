@@ -3,7 +3,12 @@ import React from "react";
 import axios from "axios";
 import { useState, SetStateAction } from "react";
 // import { useRouter } from "next/router";
-
+interface response {
+  data: {
+    token: string;
+  };
+  status: number;
+}
 function SignupModal({
   setIsSignupModalOpen,
 }: {
@@ -20,7 +25,7 @@ function SignupModal({
     e.preventDefault();
     try {
       setMessage("signing up");
-      const response: any = await axios.post(
+      const response: response = await axios.post(
         "http://localhost:3000/api/v1/auth/user/signup",
         {
           username: formData.username,

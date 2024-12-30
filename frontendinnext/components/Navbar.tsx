@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { SetStateAction } from "react";
 
 const Navbar = ({
@@ -20,6 +21,16 @@ const Navbar = ({
             placeholder="seach"
             className="px-5 py-1 border rounded-full "
           ></input>
+          <Link href="/mycourses">
+            {" "}
+            <button
+              className="px-5 py-2 text-white bg-blue-500 rounded-md"
+              onClick={() => setIsLoginModalOpen(true)}
+            >
+              My Courses
+            </button>
+          </Link>
+
           <button
             className="px-5 py-2 text-white bg-blue-500 rounded-md"
             onClick={() => setIsLoginModalOpen(true)}

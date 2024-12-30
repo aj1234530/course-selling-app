@@ -8,13 +8,21 @@ interface course {
   courseDescription: string;
   price: string;
 }
+
+interface response {
+  data: {
+    token: string;
+    courses: course[];
+  };
+  status: number;
+}
 function MyCourses() {
   const [courses, setCourses] = useState<course[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       //putting any for now
       const token = localStorage.getItem("token");
-      const response: any = await axios.get(
+      const response: response = await axios.get(
         "http://localhost:3000/api/v1/user/myzone",
         {
           headers: { Authorization: `Bearer ${token}` },

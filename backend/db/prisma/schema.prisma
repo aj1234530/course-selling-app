@@ -39,8 +39,9 @@ model Course {
   user                       User[]                      @relation("UserCourse") // Many-to-many relation with User
   adminId                    String
   admin                      Admin                       @relation(fields: [adminId], references: [id]) // One-to-many relation with Admin
-  rootCourseContentDirectory RootCourseContentDirectory? //need to make due to chicken and egg problem(gpt reference:https://chatgpt.com/share/67702708-7cd8-8009-8a2e-94101a2ddbc6)
+  rootCourseContentDirectory RootCourseContentDirectory? 
 }
+//need to make due to chicken and egg problem(gpt reference:https://chatgpt.com/share/67702708-7cd8-8009-8a2e-94101a2ddbc6)
 
 model RootCourseContentDirectory {
   id        String   @id @default(cuid())

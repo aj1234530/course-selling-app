@@ -9,14 +9,28 @@ interface course {
   courseDescription: string;
   price: string;
 }
+interface response {
+  data: {
+    token: string;
+    yourcourses: course[];
+  };
+  status: number;
+}
 function Dashboard() {
   const [courses, setCourses] = useState<course[]>([]);
   const [courseModalOpen, setCourseModalOpen] = useState(false);
+
+  //handle course delete(not working the bacekend route yet(foreign key violation))
+  const handleCourseDelete = (id: string) => {
+    console.log(id);
+    //request to backend and update the ui
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       //putting any for now
       const token = localStorage.getItem("token");
-      const response: any = await axios.get(
+      const response: response = await axios.get(
         "http://localhost:3000/api/v1/admin/allcourses",
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -44,7 +58,7 @@ function Dashboard() {
       {courses.length === 0 && (
         <div className="text-gray-500 italic">No courses found</div>
       )}
-      {courses.map((course, index) => (
+      {courses.map((course) => (
         <div
           key={course.id}
           className="border border-gray-200 p-4 mb-4 rounded-lg shadow"
@@ -63,14 +77,15 @@ function Dashboard() {
                 </button>
               </Link>
               {/* using id of the course to delete the delete button has id of the ,we will extract and delete */}
-              <button
+              {/* <button
                 id={`${course.id}`}
                 className="mt-3 px-4 py-2 bg-gray-800 text-white rounded hover:bg-blue-700"
               >
                 Edit(not implemented yet)
-              </button>
+              </button> */}
               <button
                 id={`${course.id}`}
+                onClick={() => handleCourseDelete(course.id)}
                 className="mt-3 px-4 py-2 bg-red-500 text-white rounded hover:bg-blue-700"
               >
                 Delete(not implemented yet)

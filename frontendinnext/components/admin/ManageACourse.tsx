@@ -1,7 +1,7 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { triggerToast } from "@/lib/helperFunctions/errorAndSuccessToast";
 import CreateSubfolder from "./addcontents/CreateSubFolder";
 import UploadVideo from "./addcontents/UploadVideo";
@@ -33,15 +33,24 @@ function ManageACourse({ id }: { id: string }) {
     //some sort of recursion will come to play when the nested folder comes into play
     folder: Folder[];
   }
+  interface response {
+    data: {
+      token: string;
+      requestedCourse: Course;
+      rootDirectory: courseRootDirectory;
+    };
+    status: number;
+  }
   //VIDEO_DELETE: on click the button it will delete the ,(for now not updating ui immediately, no confirm courseLoadingMessage)
-  const handleVideoDelete = async (e: any) => {
+  const handleVideoDelete = async (id: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/v1/admin/videodelete/${e.target.id}`
+        `http://localhost:3000/api/v1/admin/videodelete/${id}`
       );
 
       if (response.status === 200) {
         triggerToast("delete successful", "success");
+        setUpdateUi((prev) => !prev); //for updating ui
       } else {
         triggerToast("delete failed", "error");
       }
@@ -51,11 +60,12 @@ function ManageACourse({ id }: { id: string }) {
       console.log(error);
     }
   };
-  const handleFolderDelete = async (e: any) => {
+  const handleFolderDelete = async (id: string) => {
     try {
       //id is getting extracted from te button (it was set during map over)
+
       const response = await axios.delete(
-        `http://localhost:3000/api/v1/admin/folderdelete/${e.target.id}`
+        `http://localhost:3000/api/v1/admin/folderdelete/${id}`
       );
 
       if (response.status === 200) {
@@ -83,12 +93,12 @@ function ManageACourse({ id }: { id: string }) {
   >(null);
 
   //VIDEO upload - rest is mange in the video upload component
-  const handleVideoUpload = (e: any) => {
-    setFolderId(e.target.id);
-    console.log("ran", e.target.id);
+  const handleVideoUpload = (id: string) => {
+    setFolderId(id);
     console.log(folderId); //every button has id for the folder it is present in
     setIsUploadVideoModelOpen(true);
   };
+
   useEffect(() => {
     const fetchCourse = async () => {
       try {
@@ -98,7 +108,7 @@ function ManageACourse({ id }: { id: string }) {
           return;
         }
 
-        const response: any = await axios.get(
+        const response: response = await axios.get(
           `http://localhost:3000/api/v1/admin/course/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -211,7 +221,7 @@ function ManageACourse({ id }: { id: string }) {
                       <button
                         type="button"
                         id={el.id}
-                        onClick={handleVideoUpload}
+                        onClick={() => handleVideoUpload(el.id)}
                         className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200"
                       >
                         Add Video
@@ -230,7 +240,7 @@ function ManageACourse({ id }: { id: string }) {
                       </button> */}
                       <button
                         id={el.id}
-                        onClick={handleFolderDelete}
+                        onClick={() => handleFolderDelete(el.id)}
                         className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200"
                         // onClick={() => handleDelete(el.id)}
                       >
@@ -240,7 +250,7 @@ function ManageACourse({ id }: { id: string }) {
                   </div>
 
                   {/* mapping video for each week(el is outer folder here) */}
-                  {el.videos.map((el, index) => (
+                  {el.videos.map((el) => (
                     <div
                       key={el.id}
                       style={{
@@ -285,7 +295,7 @@ function ManageACourse({ id }: { id: string }) {
                       {/* Delete Button */}
                       <button
                         id={`${el.id}`}
-                        onClick={handleVideoDelete}
+                        onClick={() => handleVideoDelete(el.id)}
                         style={{
                           backgroundColor: "#ff4d4f",
                           color: "white",

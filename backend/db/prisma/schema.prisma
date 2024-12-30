@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String   @id @default(cuid())
+  username         String   @unique
+  email            String   @unique
+  password         String   @unique
+  purchasedCourses Course[] @relation("UserCourse") //implicit m-m t with the courses table
+}
+
+//will be provided by the developer if anyone wants, the admin he need to contact the develope their codebase will be separately deployed(separate db, all that)
+model Admin {
+  id       String   @id @default(cuid())
+  username String   @unique @default("username") //single quotes not allowed
+  password String   @unique @default("password")
+  course   Course[]
+}
+
+model Course {
+  id                         String                      @id @unique @default(cuid())
+  courseTitle                String
+  price                      Int
+  courseDescription          String
+  thumbnailUrl               String?                     @default("keep default url here if there is no image upload")
+  courseValidity             DateTime? // User access validity period
+  user                       User[]                      @relation("UserCourse") // Many-to-many relation with User
+  adminId                    String
+  admin                      Admin                       @relation(fields: [adminId], references: [id]) // One-to-many relation with Admin
+  rootCourseContentDirectory RootCourseContentDirectory? //need to make due to chicken and egg problem(gpt reference:https://chatgpt.com/share/67702708-7cd8-8009-8a2e-94101a2ddbc6)
+}
+
+model RootCourseContentDirectory {
+  id        String   @id @default(cuid())
+  title     String   @default("main course folder")
+  courseId  String   @unique // One-to-one relation with Course
+  course    Course   @relation(fields: [courseId], references: [id]) // Optional relation to Course
+  thumbnail String   @default("default svg url for the folder")
+  folder    Folder[] // One-to-many relation with Folder
+  video     Video[] // Videos in the root directory
+  link      Link[] // Links in the root directory
+  notes     Notes[] // Notes in the root directory
+}
+
+//folder is related to the root dirctory(it is connected to the course)
+model Folder {
+  id                           String                      @id @default(cuid())
+  title                        String
+  videos                       Video[]
+  notes                        Notes[]
+  link                         Link[]
+  rootCourseContentDirectoryId String //referencing the course id
+  rootCourseContentDirectory   RootCourseContentDirectory? @relation(fields: [rootCourseContentDirectoryId], references: [courseId])
+}
+
+model Video {
+  id                           String                      @id @default(cuid())
+  title                        String
+  url                          String
+  rootCourseContentDirectoryId String?                     @unique
+  rootCourseContentDirectory   RootCourseContentDirectory? @relation(fields: [rootCourseContentDirectoryId], references: [id])
+  folderId                     String?
+  folder                       Folder?                     @relation(fields: [folderId], references: [id])
+}
+
+model Link {
+  id                           String                      @id @default(cuid())
+  link                         String
+  rootCourseContentDirectoryId String?                     @unique //link,(same for vid,notes) can be added to rootdirectory or folder(it will be connected to root)
+  rootCourseContentDirectory   RootCourseContentDirectory? @relation(fields: [rootCourseContentDirectoryId], references: [courseId])
+  folderId                     String?
+  folder                       Folder?                     @relation(fields: [folderId], references: [id])
+}
+
+model Notes {
+  id                           String                      @id @default(cuid())
+  rootCourseContentDirectoryId String?
+  rootCourseContentDirectory   RootCourseContentDirectory? @relation(fields: [rootCourseContentDirectoryId], references: [id])
+  folderId                     String?
+  folder                       Folder?                     @relation(fields: [folderId], references: [id])
+}

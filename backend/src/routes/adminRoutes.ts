@@ -129,10 +129,12 @@ adminRouter.post(
       });
       res.status(200).json({ message: "Video added Successfully" });
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: "Internal Sever Error" });
     }
   }
 );
+
 adminRouter.post("/addlinks/:courseId", async (req, res) => {
   const link: string = req.body.link;
   try {
@@ -210,7 +212,9 @@ adminRouter.delete(
   async (req: Request, res: Response) => {
     const { courseId } = req.params;
     try {
-      const course = await prisma.course.delete({
+      //dleteing the contents related to the course so that no circular
+
+      const deletedCourse = await prisma.course.delete({
         where: { id: courseId },
         include: { rootCourseContentDirectory: true },
       });

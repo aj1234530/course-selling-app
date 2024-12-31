@@ -1,5 +1,4 @@
 import { toast } from "react-toastify";
-
 export const triggerToast = (message: string, type: "success" | "error") => {
   if (type === "success") {
     toast.success(message, {

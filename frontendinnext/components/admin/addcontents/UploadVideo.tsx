@@ -1,5 +1,8 @@
-import { useState } from "react";
+import supabase from "@/lib/helperFunctions/supabase";
+import { useRef, useState } from "react";
 import axios from "axios";
+import { errorMonitor } from "events";
+
 interface UploadVideoProps {
   folderId: string;
   isUploadVideoModelOpen: boolean;
@@ -10,16 +13,57 @@ function UploadVideo({
   // isUploadVideoModelOpen,
   setIsUploadVideoModelOpen,
 }: UploadVideoProps) {
-  const [videoUrl, setVideoUrl] = useState<null | string>(null); //forsending to db
+  // const [videoUrl, setVideoUrl] = useState<null | string>(null); //forsending to db
+  const fileUrl = useRef<null | string>(null); //
+  const [file, setFile] = useState<File | null>(null);
   const [videoTitle, setVideoTitle] = useState<null | string>(null);
+  const [uploadingMessage, setUploadingMessage] = useState(false);
   async function handleVideoAddToDb() {
     //only links is used for now(no file select)
     console.log(folderId); //checking the folder id
     try {
+      if (file) {
+        setUploadingMessage(true); // Show uploading message
+        const fileName = `${Date.now()}-${file.name}`;
+
+        // Uploading  the file to supabase to the bucket, will return data and error
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("course-selling-app")
+          .upload(fileName, file);
+
+        if (uploadError) {
+          console.error("Error uploading file:", uploadError);
+          setUploadingMessage(false);
+          return;
+        }
+
+        // if no error get the public url
+        const { data: publicUrlData } = await supabase.storage
+          .from("course-selling-app")
+          .getPublicUrl(uploadData.path);
+        //if not got public url
+        if (!publicUrlData) {
+          console.error("Error getting public URL:");
+          setUploadingMessage(false);
+          return;
+        }
+
+        if (publicUrlData?.publicUrl) {
+          fileUrl.current = publicUrlData?.publicUrl;
+          console.log(fileUrl);
+          console.log(publicUrlData?.publicUrl, "dfasdfdsf");
+          // ***Set the public URL(from object returned from supabase ) tot the video url to send to the backend***
+        } else {
+          console.error("Public URL is null");
+        }
+        setUploadingMessage(false); // Hide uploading message
+      }
+
+      //saving video to a particular folder(using folder id)
       const response = await axios.post(
         `http://localhost:3000/api/v1/admin/addvideo/${folderId}`,
         {
-          videoUrl: videoUrl,
+          videoUrl: fileUrl.current, //what ever
           videoTitle: videoTitle,
         },
         {
@@ -50,16 +94,17 @@ function UploadVideo({
               placeholder="Enter Video Title"
               className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <input
-              onChange={(e) => setVideoUrl(e.target.value)}
+            {/* <input
+              
               type="text"
               required
-              placeholder="Enter Video Url"
+              placeholder="Enter Video Url(or choose file)"
               className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            /> */}
             <input
               // onChange={(e) => setFolderTitle(e.target.value)}
               type="file"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
               accept="video/*"
               className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -80,6 +125,7 @@ function UploadVideo({
               </button>
             </div>
           </div>
+          {uploadingMessage && <p>Uploading</p>}
         </form>
       </div>
     </div>

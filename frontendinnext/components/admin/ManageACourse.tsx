@@ -95,7 +95,7 @@ function ManageACourse({ id }: { id: string }) {
   //VIDEO upload - rest is mange in the video upload component
   const handleVideoUpload = (id: string) => {
     setFolderId(id);
-    console.log(folderId); //every button has id for the folder it is present in
+    console.log(folderId); 
     setIsUploadVideoModelOpen(true);
   };
 

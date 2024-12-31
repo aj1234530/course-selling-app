@@ -7,7 +7,7 @@ const Sidebar = () => {
         🏡Home
       </a>
       <Link href="/browse" className="block py-2 px-6  hover:bg-gray-200">
-        📕Courses
+        📕Browse Courses
       </Link>
       <Link href="/admin/login" className="block py-2 px-6  hover:bg-gray-200">
         Admin Login

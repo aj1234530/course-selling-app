@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { JWT_SECRET } from "..";
-import { signupSchema } from "../types/zodValidation";
 import { authSessionMiddleware } from "../middlewares/authsession";
 
 export const authRouter = express.Router();

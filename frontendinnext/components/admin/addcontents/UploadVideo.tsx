@@ -1,4 +1,4 @@
-import supabase from "@/lib/helperFunctions/supabase";
+import supabase from "../../../lib/helperFunctions/supabase";
 import { useRef, useState } from "react";
 import axios from "axios";
 

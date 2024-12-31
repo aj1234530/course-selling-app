@@ -1,7 +1,6 @@
 import supabase from "@/lib/helperFunctions/supabase";
 import { useRef, useState } from "react";
 import axios from "axios";
-import { errorMonitor } from "events";
 
 interface UploadVideoProps {
   folderId: string;

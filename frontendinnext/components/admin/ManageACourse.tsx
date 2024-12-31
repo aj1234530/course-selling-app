@@ -45,7 +45,7 @@ function ManageACourse({ id }: { id: string }) {
   const handleVideoDelete = async (id: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/v1/admin/videodelete/${id}`
+        `${process.env.NEXT_PUBLIC_ADMIN_VIDEO_DELETE_ROUTE}${id}`
       );
 
       if (response.status === 200) {
@@ -65,7 +65,7 @@ function ManageACourse({ id }: { id: string }) {
       //id is getting extracted from te button (it was set during map over)
 
       const response = await axios.delete(
-        `http://localhost:3000/api/v1/admin/folderdelete/${id}`
+        `${process.env.NEXT_PUBLIC_ADMIN_FOLDER_DELETE_ROUTE}${id}`
       );
 
       if (response.status === 200) {
@@ -95,7 +95,7 @@ function ManageACourse({ id }: { id: string }) {
   //VIDEO upload - rest is mange in the video upload component
   const handleVideoUpload = (id: string) => {
     setFolderId(id);
-    console.log(folderId); 
+    console.log(folderId);
     setIsUploadVideoModelOpen(true);
   };
 
@@ -109,7 +109,7 @@ function ManageACourse({ id }: { id: string }) {
         }
 
         const response: response = await axios.get(
-          `http://localhost:3000/api/v1/admin/course/${id}`,
+          `${process.env.NEXT_PUBLIC_ADMIN_FETCH_COURSE_ROUTE}${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

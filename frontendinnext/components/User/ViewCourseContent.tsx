@@ -47,7 +47,7 @@ function ViewCourseContent({ id }: { id: string }) {
         }
 
         const response: response = await axios.get(
-          `http://localhost:3000/api/v1/user/accesscourse/${id}`,
+          `${process.env.NEXT_PUBLIC_ACCESS_COURSE}${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

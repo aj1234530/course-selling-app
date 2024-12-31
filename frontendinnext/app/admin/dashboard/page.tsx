@@ -31,7 +31,7 @@ function Dashboard() {
       //putting any for now
       const token = localStorage.getItem("token");
       const response: response = await axios.get(
-        "http://localhost:3000/api/v1/admin/allcourses",
+        `${process.env.NEXT_PUBLIC_ADMIN_DASHBOARD_ROUTE}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

@@ -12,7 +12,7 @@ function CreateSubfolder({
   const handleFolderCreation = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/v1/admin/course/addfolder/${id}`,
+        `${process.env.NEXT_PUBLIC_ADMIN_ADD_FOLDER_ROUTE}${id}`,
         {
           title: folderTitle,
         },

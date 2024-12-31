@@ -103,6 +103,7 @@ userRouter.get(
       }
       res.status(200).json({ courses: user.purchasedCourses }); //responding with all the purchased courses
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: "Internal server error" });
     }
   }

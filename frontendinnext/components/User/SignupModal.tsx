@@ -26,7 +26,7 @@ function SignupModal({
     try {
       setMessage("signing up");
       const response: response = await axios.post(
-        "http://localhost:3000/api/v1/auth/user/signup",
+        `${process.env.NEXT_PUBLIC_USER_SIGNUP}`,
         {
           username: formData.username,
           email: formData.email,

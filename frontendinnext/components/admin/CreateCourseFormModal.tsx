@@ -18,7 +18,7 @@ function CreateCourseFormModal({
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/admin/createcourse",
+        `${process.env.NEXT_PUBLIC_ADMIN_CREATE_COURSE_ROUTE}`,
         {
           courseTitle: formData.courseTitle,
           courseDescription: formData.courseDescription,

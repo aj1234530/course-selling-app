@@ -61,7 +61,7 @@ function UploadVideo({
 
       //saving video to a particular folder(using folder id)
       const response = await axios.post(
-        `http://localhost:3000/api/v1/admin/addvideo/${folderId}`,
+        `${process.env.NEXT_PUBLIC_ADMIN_ADD_VIDEO_ROUTE}${folderId}`,
         {
           videoUrl: fileUrl.current, //what ever
           videoTitle: videoTitle,

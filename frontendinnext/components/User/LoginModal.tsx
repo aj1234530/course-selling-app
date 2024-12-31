@@ -25,7 +25,7 @@ function LoginModal({
     try {
       setMessage("signing up");
       const response: response = await axios.post(
-        "http://localhost:3000/api/v1/auth/user/signin",
+        `${process.env.NEXT_PUBLIC_USER_SIGNIN}`,
         {
           email: formData.email,
           password: formData.password,

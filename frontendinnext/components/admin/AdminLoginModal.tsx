@@ -21,7 +21,7 @@ export function AdminLoginModal() {
   const handleClick = async () => {
     try {
       const response: response = await axios.post(
-        "http://localhost:3000/api/v1/auth/admin/signin",
+        `${process.env.NEXT_PUBLIC_ADMIN_LOGIN_ROUTE}`,
         {
           username: username,
           password: password,

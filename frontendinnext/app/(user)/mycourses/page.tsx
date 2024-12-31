@@ -23,7 +23,7 @@ function MyCourses() {
       //putting any for now
       const token = localStorage.getItem("token");
       const response: response = await axios.get(
-        "http://localhost:3000/api/v1/user/myzone",
+        `${process.env.NEXT_PUBLIC_MY_ZONE_ROUTE}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

@@ -17,7 +17,7 @@ function useIfLogged() {
         setToken(storedToken);
         try {
           const response = await axios.get(
-            "http://localhost:3000/api/v1/auth/authverify",
+            `${process.env.NEXT_PUBLIC_AUTH_VERIFY}`,
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,

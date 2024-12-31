@@ -24,7 +24,7 @@ function Browse() {
       const token = localStorage.getItem("token");
       console.log("token sent", token);
       const response = await axios.post(
-        `http://localhost:3000/api/v1/user/course/buy/${e.currentTarget.id}`,
+        `${process.env.NEXT_PUBLIC_BUY_ROUTE}${e.currentTarget.id}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -51,7 +51,7 @@ function Browse() {
       //putting any for now
 
       const response: response = await axios.get(
-        "http://localhost:3000/api/v1/user/courses"
+        `${process.env.NEXT_PUBLIC_ALL_COURSES_ROUTE}`
       );
       console.log(response);
       setCourses(response.data.courses);

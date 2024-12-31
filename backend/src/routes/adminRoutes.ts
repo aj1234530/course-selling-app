@@ -213,10 +213,17 @@ adminRouter.delete(
     const { courseId } = req.params;
     try {
       //dleteing the contents related to the course so that no circular
-
-      const deletedCourse = await prisma.course.delete({
-        where: { id: courseId },
-        include: { rootCourseContentDirectory: true },
+      await prisma.$transaction(async () => {
+        const deleteFolders = await prisma.folder.deleteMany({
+          where: { rootCourseContentDirectoryId: courseId },
+        });
+        const deletedRootDirectory =
+          await prisma.rootCourseContentDirectory.delete({
+            where: { courseId: courseId },
+          });
+        const deletedCourse = await prisma.course.delete({
+          where: { id: courseId },
+        });
       });
       res.status(200).json({ message: "Requested course Deleted" });
     } catch (error) {

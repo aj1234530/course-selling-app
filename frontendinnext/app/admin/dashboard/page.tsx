@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import CreateCourseFormModal from "@/components/admin/CreateCourseFormModal";
+import { ToastContainer } from "react-toastify";
+import { triggerToast } from "@/lib/helperFunctions/errorAndSuccessToast";
 interface course {
   id: string;
   courseTitle: string;
@@ -19,10 +21,24 @@ interface response {
 function Dashboard() {
   const [courses, setCourses] = useState<course[]>([]);
   const [courseModalOpen, setCourseModalOpen] = useState(false);
-
+  const [updateUI, setUpdateUi] = useState(false);
   //handle course delete(not working the bacekend route yet(foreign key violation))
-  const handleCourseDelete = (id: string) => {
-    console.log(id);
+  const handleCourseDelete = async (id: string) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_ADMIN_COURSE_DELETE_ROUTE}${id}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      if (response.status === 200) {
+        triggerToast("Success, course deleted", "success");
+        setUpdateUi((p) => !p);
+      }
+    } catch (error) {
+      triggerToast("course deletion failed", "error");
+      console.log(error);
+    }
     //request to backend and update the ui
   };
 
@@ -41,11 +57,12 @@ function Dashboard() {
       console.log(courses);
     };
     fetchData();
-  }, [courseModalOpen]); //on modal state chnage re-render to update the course if added any
+  }, [courseModalOpen, updateUI]); //on modal state chnage re-render to update the course if added any
 
   // css written with gpt
   return (
     <div className="p-6 font-sans">
+      <ToastContainer />
       <div className="flex flex-row justify-between">
         <h1 className="text-2xl font-bold mb-4">My Courses</h1>
         <button
@@ -86,9 +103,9 @@ function Dashboard() {
               <button
                 id={`${course.id}`}
                 onClick={() => handleCourseDelete(course.id)}
-                className="mt-3 px-4 py-2 bg-red-500 text-white rounded hover:bg-blue-700"
+                className="mt-3 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
               >
-                Delete(not implemented yet)
+                Delete
               </button>
             </div>
           </div>

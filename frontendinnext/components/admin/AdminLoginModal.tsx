@@ -11,6 +11,7 @@ export function AdminLoginModal() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoginSuccess, setIsLoginSuccess] = useState(false);
+  const [loginMessage, setLoginMessage] = useState<string | null>(null);
 
   interface response {
     data: {
@@ -19,6 +20,7 @@ export function AdminLoginModal() {
     status: number;
   }
   const handleClick = async () => {
+    setLoginMessage("Please wait");
     try {
       const response: response = await axios.post(
         `${process.env.NEXT_PUBLIC_ADMIN_LOGIN_ROUTE}`,
@@ -28,6 +30,7 @@ export function AdminLoginModal() {
         }
       );
       if (response.status === 200) {
+        setLoginMessage(null);
         localStorage.setItem("token", response.data.token);
         triggerToast("login successful", "success");
         setIsLoginSuccess(true);
@@ -87,6 +90,7 @@ export function AdminLoginModal() {
                 </button>
               </Link>
             )}
+            {loginMessage && <div>{loginMessage}</div>}
           </div>
         </div>
       </div>

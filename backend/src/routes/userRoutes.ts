@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { bankServer } from "../webhook/bankSimulation";
 const prisma = new PrismaClient();
 export const userRouter = express.Router();
-
+import { Course } from "@prisma/client";
 userRouter.get("/courses", async (req, res) => {
   //can apply the pagination here(not applied for now)
   try {
@@ -44,7 +44,9 @@ userRouter.post(
         res.status(409).json({ message: "please provide  a course id" });
         return;
       }
-      const course = await prisma.course.findFirst({ where: { id: courseId } });
+      const course: Course | null = await prisma.course.findFirst({
+        where: { id: courseId },
+      });
       if (!course) {
         res.status(409).json({ message: "requested resource does not exists" });
         return;
@@ -152,12 +154,10 @@ userRouter.get(
           },
         },
       });
-      res
-        .status(200)
-        .json({
-          rootDirectory: rootDirectory,
-          course: hasUserPurchasedThisCourse,
-        });
+      res.status(200).json({
+        rootDirectory: rootDirectory,
+        course: hasUserPurchasedThisCourse,
+      });
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
     }
